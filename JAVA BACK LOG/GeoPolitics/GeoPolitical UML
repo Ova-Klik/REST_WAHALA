@@ -1,0 +1,16 @@
++----------------------+          +------------------+
+|  <<enum>>            |          |   Zone     |
+|  GeoPoliticalZones   |          +------------------+
++----------------------+          | + findZone()     |
+| NORTH_CENTRAL        |<---------|   : GeoPolitical  |
+| NORTH_EAST           |          |     Zone         |
+| NORTH_WEST           |          +------------------+
+| SOUTH_EAST           |                  |
+| SOUTH_SOUTH          |                  | uses
+| SOUTH_WEST           |                  v
++----------------------+          +------------------+
+| - states: String[]   |          | GeoPoliticalMain |
+| + getStates()        |          +------------------+
++----------------------+          | + main()         |
+                                  | Scanner input    |
+                                  +------------------+
