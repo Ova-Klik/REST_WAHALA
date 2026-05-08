@@ -1,7 +1,10 @@
+package Stack;
+
 import java.util.EmptyStackException;
 
 public class MyStack{
     private int top;
+    private int bottom=0;
     private int [] data ;
 
     public MyStack(int size){
