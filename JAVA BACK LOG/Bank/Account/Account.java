@@ -1,20 +1,25 @@
 package Bank.Account;
 
-import CustomException.*;
+import Bank.CustomException.*;
 
 import java.math.BigDecimal;
 
 public class Account {
     private String name;
+    private final String acctNumber;
     private final String pin;
     private BigDecimal balance;
 
-    public Account(String name, String pin) {
-        if (pin == null || name == null) throw new NullFieldException("Fields cannot be null");
+    public Account(String name, String acctNumber, String pin) {
+        if (name == null) throw new NullFieldException("Name cannot be null");
+        if (acctNumber == null) throw new NullFieldException("Account number cannot be null");
+        if (pin == null) throw new NullFieldException("Pin cannot be null");
         checkEmptyField(name);
+        checkEmptyField(acctNumber);
         checkEmptyField(pin);
-        this.pin = pin;
         this.name = name;
+        this.acctNumber = acctNumber;
+        this.pin = pin;
         this.balance = BigDecimal.ZERO;
     }
 
@@ -30,11 +35,19 @@ public class Account {
     }
 
     public void withdraw(BigDecimal amount, String pin) {
-        checkInvalidPin(pin);
         checkNullAmount(amount);
-        checkInvalidAmount(amount);
+        checkInvalidPin(pin);
         checkInsufficientFunds(amount);
+        checkInvalidAmount(amount);
         balance = balance.subtract(amount);
+    }
+
+    public String getAcctNumber() {
+        return acctNumber;
+    }
+
+    public String getName() {
+        return name;
     }
 
     private void checkInvalidPin(String pin) {

@@ -1,7 +1,8 @@
-package CustomException;
+package Bank.CustomException;
 
-public class AccountException extends RuntimeException {
-    public AccountException(String message) {
-        super(message);
+public class AccountException extends RuntimeException{
+        public AccountException(String message) {
+            super(message);
+        }
     }
-}
+

@@ -1,6 +1,6 @@
 package Bank.Account;
 
-import CustomException.*;
+import Bank.CustomException.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -16,18 +16,17 @@ class AccountTest {
 
     @BeforeEach
     void setUp() {
-        account = new Account("Victor", CORRECT_PIN);
-
+        // ✅ Account now requires acctNumber — pass a dummy one in tests
+        account = new Account("Victor", "0850000017", CORRECT_PIN);
     }
 
     @Test
-    void testAccountIsEmptyAtCreation() {
+    void testAccountIsNotNullAtCreation() {
         assertNotNull(account);
     }
 
     @Test
     void testAccountBalanceIsZeroAtCreation() {
-
         assertEquals(BigDecimal.ZERO, account.getBalance(CORRECT_PIN));
     }
 
@@ -36,12 +35,10 @@ class AccountTest {
         account.deposit(BigDecimal.valueOf(900));
         account.deposit(BigDecimal.ZERO);
         assertEquals(BigDecimal.valueOf(900), account.getBalance(CORRECT_PIN));
-
     }
 
     @Test
     void testAccountDeposits5_000_AccountBalanceIs5_000() {
-
         BigDecimal amount = BigDecimal.valueOf(5000);
         assertEquals(BigDecimal.ZERO, account.getBalance(CORRECT_PIN));
         account.deposit(amount);
@@ -55,28 +52,23 @@ class AccountTest {
 
     @Test
     void testDepositNegativeAmount_ThrowsException() {
-
         assertEquals(BigDecimal.ZERO, account.getBalance(CORRECT_PIN));
         assertThrows(InvalidAmountException.class, () -> account.deposit(BigDecimal.valueOf(-5000)));
     }
 
     @Test
-    void testDeposit5_000_withdraw_5_000WithCorrectPin_AccountBalanceIsZero() {
-
+    void testDeposit5_000_withdraw5_000WithCorrectPin_AccountBalanceIsZero() {
         account.deposit(BigDecimal.valueOf(5000));
         assertEquals(BigDecimal.valueOf(5000), account.getBalance(CORRECT_PIN));
         account.withdraw(BigDecimal.valueOf(5000), CORRECT_PIN);
         assertEquals(BigDecimal.ZERO, account.getBalance(CORRECT_PIN));
     }
 
-
     @Test
     void testDeposit5_000_withdraw7_000WithCorrectPin_throwsException() {
-
         account.deposit(BigDecimal.valueOf(5000));
         assertEquals(BigDecimal.valueOf(5000), account.getBalance(CORRECT_PIN));
-        assertThrows(InsufficientFundException.class, ()->account.withdraw(BigDecimal.valueOf(7000), CORRECT_PIN));
-
+        assertThrows(InsufficientFundException.class, () -> account.withdraw(BigDecimal.valueOf(7000), CORRECT_PIN));
     }
 
     @Test
@@ -85,31 +77,56 @@ class AccountTest {
     }
 
     @Test
-    void testAccountCreatedWithNullInPinField_ThrowsException() {
-
-        assertThrows(NullFieldException.class, () -> account = new Account("Victor", null));
+    void testAccountCreatedWithNullPin_ThrowsException() {
+        assertThrows(NullFieldException.class, () -> new Account("Victor", "0850000017", null));
     }
 
     @Test
-    void testAccountCreatedWithNullINNameField_ThrowsException() {
+    void testAccountCreatedWithNullName_ThrowsException() {
+        assertThrows(NullFieldException.class, () -> new Account(null, "0850000017", CORRECT_PIN));
+    }
 
-        assertThrows(NullFieldException.class, () -> account = new Account(null, CORRECT_PIN));
+    @Test
+    void testAccountCreatedWithNullAcctNumber_ThrowsException() {
+        assertThrows(NullFieldException.class, () -> new Account("Victor", null, CORRECT_PIN));
     }
 
     @Test
     void testAccountCreatedWithEmptyPin_ThrowsException() {
-
-        assertThrows(EmptyFieldException.class, () -> account = new Account("Victor", ""));
+        assertThrows(EmptyFieldException.class, () -> new Account("Victor", "0850000017", ""));
     }
 
     @Test
-    void testWithdraw5_000_withIncorrectPinThrowsException() {
+    void testAccountCreatedWithEmptyName_ThrowsException() {
+        assertThrows(EmptyFieldException.class, () -> new Account("", "0850000017", CORRECT_PIN));
+    }
 
+    @Test
+    void testWithdraw5_000_withIncorrectPin_ThrowsException() {
         account.deposit(BigDecimal.valueOf(5000));
         assertEquals(BigDecimal.valueOf(5000), account.getBalance(CORRECT_PIN));
         assertThrows(InvalidPinException.class, () -> account.withdraw(BigDecimal.valueOf(5_000), INCORRECT_PIN));
     }
+
+    @Test
+    void testWithdrawNull_ThrowsException() {
+        account.deposit(BigDecimal.valueOf(5000));
+        assertThrows(NullFieldException.class, () -> account.withdraw(null, CORRECT_PIN));
+    }
+
+    @Test
+    void testWithdrawNegativeAmount_ThrowsException() {
+        account.deposit(BigDecimal.valueOf(5000));
+        assertThrows(InvalidAmountException.class, () -> account.withdraw(BigDecimal.valueOf(-100), CORRECT_PIN));
+    }
+
+    @Test
+    void testGetAcctNumber_returnsCorrectAccountNumber() {
+        assertEquals("0850000017", account.getAcctNumber());
+    }
+
+    @Test
+    void testGetName_returnsCorrectName() {
+        assertEquals("Victor", account.getName());
+    }
 }
-
-
-
